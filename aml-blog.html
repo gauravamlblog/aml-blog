@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AML Insight — Anti Money Laundering Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=Libre+Franklin:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #2a2a3a;
+    --accent: #c8a96e;
+    --accent2: #e63946;
+    --text: #e8e8f0;
+    --muted: #8888aa;
+    --green: #2ecc71;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Libre Franklin', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+  }
+  .nav-logo span { color: var(--accent2); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover { background: #fff; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(200,169,110,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(230,57,70,0.06) 0%, transparent 50%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+  }
+  .hero-content { position: relative; max-width: 1200px; margin: 0 auto; width: 100%; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(230,57,70,0.15);
+    border: 1px solid rgba(230,57,70,0.3);
+    color: var(--accent2);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    padding: 0.35rem 0.8rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+  }
+  .hero-tag::before { content: '●'; font-size: 0.5rem; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+  .hero h1 .red { color: var(--accent2); }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 600px;
+    margin-bottom: 3rem;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  .hero-stats {
+    display: flex; gap: 3rem; flex-wrap: wrap;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-item { }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.3rem;
+  }
+
+  .hero-badge {
+    position: absolute; right: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 280px; height: 280px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    background: var(--card);
+    animation: rotate 20s linear infinite;
+  }
+  @keyframes rotate { to { transform: translateY(-50%) rotate(360deg); } }
+  .hero-badge-inner { animation: rotate-reverse 20s linear infinite; }
+  @keyframes rotate-reverse { to { transform: rotate(-360deg); } }
+  .hero-badge-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--accent2);
+  }
+  .hero-badge-text { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* TICKER */
+  .ticker {
+    background: var(--accent2);
+    color: #fff;
+    padding: 0.6rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 30s linear infinite;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* SECTION STYLES */
+  section { padding: 6rem 2rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .section-label::after { content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--accent); }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+  }
+
+  /* WHAT IS AML */
+  .what-is { background: var(--surface); }
+  .what-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-top: 3rem; }
+  .what-text p { color: var(--muted); margin-bottom: 1.2rem; font-size: 0.95rem; }
+  .highlight-box {
+    background: var(--card);
+    border-left: 3px solid var(--accent);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .highlight-box p { color: var(--text) !important; font-size: 1rem !important; font-style: italic; margin: 0 !important; }
+
+  .what-visual { position: relative; }
+  .money-flow {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 2rem;
+  }
+  .flow-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .flow-step {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .flow-step:last-child { border-bottom: none; }
+  .flow-num {
+    width: 32px; height: 32px;
+    background: var(--accent2);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .flow-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
+  .flow-info p { font-size: 0.78rem; color: var(--muted); margin: 0; }
+
+  /* 3 STAGES */
+  .stages { background: var(--bg); }
+  .stages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .stage-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .stage-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .stage-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .stage-card:nth-child(1)::before { background: #e63946; }
+  .stage-card:nth-child(2)::before { background: #c8a96e; }
+  .stage-card:nth-child(3)::before { background: #2ecc71; }
+  .stage-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .stage-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .stage-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .stage-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+  .stage-example {
+    margin-top: 1.2rem;
+    padding: 0.8rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* RED FLAGS */
+  .red-flags { background: var(--surface); }
+  .flags-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 3rem; }
+  .flag-item {
+    display: flex; gap: 1rem;
+    padding: 1.2rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  .flag-item:hover { border-color: var(--accent2); }
+  .flag-icon {
+    width: 40px; height: 40px;
+    background: rgba(230,57,70,0.15);
+    border: 1px solid rgba(230,57,70,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .flag-text h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .flag-text p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+
+  /* KYC SECTION */
+  .kyc { background: var(--bg); }
+  .kyc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; align-items: start; }
+  .kyc-steps { }
+  .kyc-step {
+    display: flex; gap: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .kyc-step::after {
+    content: '';
+    position: absolute;
+    left: 19px; top: 40px;
+    width: 1px; height: calc(100% + 0.5rem);
+    background: var(--border);
+  }
+  .kyc-step:last-child::after { display: none; }
+  .kyc-dot {
+    width: 40px; height: 40px;
+    background: var(--card);
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .kyc-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .kyc-info p { font-size: 0.83rem; color: var(--muted); }
+
+  .kyc-table {
+    background: var(--card);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .kyc-table table { width: 100%; border-collapse: collapse; }
+  .kyc-table th {
+    background: rgba(200,169,110,0.1);
+    padding: 0.8rem 1rem;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+  }
+  .kyc-table td {
+    padding: 0.8rem 1rem;
+    font-size: 0.83rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .kyc-table tr:last-child td { border-bottom: none; }
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge-high { background: rgba(230,57,70,0.2); color: var(--accent2); }
+  .badge-med { background: rgba(200,169,110,0.2); color: var(--accent); }
+  .badge-low { background: rgba(46,204,113,0.2); color: var(--green); }
+
+  /* GLOBAL LAWS */
+  .laws { background: var(--surface); }
+  .laws-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .law-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  .law-card:hover { border-color: var(--accent); }
+  .law-flag { font-size: 1.8rem; margin-bottom: 0.8rem; }
+  .law-country {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .law-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.8rem; }
+  .law-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+  .law-year {
+    display: inline-block;
+    margin-top: 0.8rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.2rem 0.5rem;
+  }
+
+  /* PENALTIES */
+  .penalties { background: var(--bg); }
+  .penalty-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 3rem; }
+  .penalty-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .penalty-card:hover { border-color: var(--accent2); transform: translateY(-3px); }
+  .penalty-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent2);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .penalty-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+  /* LATEST ARTICLES */
+  .articles { background: var(--surface); }
+  .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .article-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .article-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .article-thumb {
+    height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .article-card:nth-child(1) .article-thumb { background: linear-gradient(135deg, #1a0a0a, #3a1010); }
+  .article-card:nth-child(2) .article-thumb { background: linear-gradient(135deg, #0a1a0a, #103a10); }
+  .article-card:nth-child(3) .article-thumb { background: linear-gradient(135deg, #0a0a1a, #10103a); }
+  .article-body { padding: 1.5rem; }
+  .article-cat {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.6rem;
+  }
+  .article-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+  .article-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+  .article-meta {
+    display: flex; justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  /* NEWSLETTER */
+  .newsletter {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 3rem;
+    text-align: center;
+    margin: 4rem auto;
+    max-width: 600px;
+    position: relative;
+    overflow: hidden;
+  }
+  .newsletter::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+  }
+  .newsletter h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .newsletter p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .newsletter-form { display: flex; gap: 0.5rem; }
+  .newsletter-form input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.75rem 1rem;
+    font-family: 'Libre Franklin', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .newsletter-form input:focus { border-color: var(--accent); }
+  .newsletter-form button {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .newsletter-form button:hover { background: #fff; }
+
+  /* FOOTER */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 4rem 2rem 2rem;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; max-width: 1200px; margin: 0 auto; }
+  .footer-brand .nav-logo { display: block; margin-bottom: 1rem; font-size: 1.6rem; }
+  .footer-brand p { font-size: 0.83rem; color: var(--muted); line-height: 1.7; max-width: 280px; }
+  .footer-col h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.6rem; }
+  .footer-col ul li a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .footer-col ul li a:hover { color: var(--text); }
+  .footer-bottom {
+    max-width: 1200px; margin: 3rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  /* SEARCH BAR */
+  .search-section { background: var(--bg); padding: 2rem; }
+  .search-box {
+    max-width: 600px; margin: 0 auto;
+    display: flex; gap: 0;
+    border: 1px solid var(--border);
+  }
+  .search-box input {
+    flex: 1;
+    background: var(--card);
+    border: none;
+    color: var(--text);
+    padding: 1rem 1.5rem;
+    font-family: 'Libre Franklin', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+  }
+  .search-box button {
+    background: var(--accent2);
+    color: #fff;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+  }
+
+  /* ANIMATIONS */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    .what-grid, .kyc-grid, .stages-grid, .laws-grid, .articles-grid { grid-template-columns: 1fr; }
+    .flags-grid, .penalty-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero-badge { display: none; }
+    .hero-stats { gap: 1.5rem; }
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .newsletter-form { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AML<span>Insight</span></div>
+  <ul class="nav-links">
+    <li><a href="#what-is">What is AML</a></li>
+    <li><a href="#stages">3 Stages</a></li>
+    <li><a href="#kyc">KYC</a></li>
+    <li><a href="#laws">Global Laws</a></li>
+    <li><a href="#articles">Articles</a></li>
+  </ul>
+  <button class="nav-cta">Subscribe →</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Live Intelligence Feed</div>
+    <h1>
+      Stop <em>Dirty Money</em><br>
+      Before It <span class="red">Disappears</span>
+    </h1>
+    <p class="hero-sub">
+      Your definitive guide to Anti-Money Laundering — from regulations and red flags to KYC compliance and global enforcement. Built for bankers, compliance officers, and curious minds.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">$2T+</span>
+        <div class="stat-label">Laundered Globally Each Year</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">200+</span>
+        <div class="stat-label">Countries Under FATF</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <div class="stat-label">Classic Stages of Money Laundering</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">$10B+</span>
+        <div class="stat-label">AML Fines Issued in 2023</div>
+      </div>
+    </div>
+
+    <div class="hero-badge">
+      <div class="hero-badge-inner">
+        <div class="hero-badge-num">FATF</div>
+        <div class="hero-badge-text">40 Recommendations<br>Global Standard</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    🔴 AML ALERT: Global financial crime losses exceed $2 trillion annually &nbsp;●&nbsp; FATF updates grey list — 24 jurisdictions under increased monitoring &nbsp;●&nbsp; India's PMLA amendments strengthen beneficial ownership rules &nbsp;●&nbsp; EU's AMLA authority to begin operations in 2025 &nbsp;●&nbsp; Crypto exchanges face tighter AML scrutiny worldwide &nbsp;●&nbsp; FinCEN issues new SAR filing guidelines for digital assets &nbsp;●&nbsp; AML ALERT: Global financial crime losses exceed $2 trillion annually &nbsp;●&nbsp; FATF updates grey list — 24 jurisdictions under increased monitoring &nbsp;●&nbsp; India's PMLA amendments strengthen beneficial ownership rules &nbsp;●
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-box">
+    <input type="text" placeholder="Search AML topics, regulations, case studies...">
+    <button>SEARCH</button>
+  </div>
+</div>
+
+<!-- WHAT IS AML -->
+<section class="what-is" id="what-is">
+  <div class="container">
+    <div class="section-label">Foundation</div>
+    <h2 class="section-title">What is Anti-Money<br>Laundering (AML)?</h2>
+    <div class="what-grid">
+      <div class="what-text fade-in">
+        <p>Anti-Money Laundering (AML) refers to the set of laws, regulations, and procedures designed to prevent criminals from disguising illegally obtained funds as legitimate income.</p>
+        <p>Money laundering is the process of making "dirty money" — from crimes like drug trafficking, corruption, fraud, or terrorism — appear "clean" and legally earned.</p>
+        <div class="highlight-box">
+          <p>"The United Nations estimates that between 2% and 5% of global GDP — approximately $800 billion to $2 trillion — is laundered each year."</p>
+        </div>
+        <p>Financial institutions, banks, insurance companies, real estate agents, and now cryptocurrency exchanges are all legally required to maintain AML compliance programs and report suspicious activities.</p>
+        <p>In India, the primary AML legislation is the <strong>Prevention of Money Laundering Act (PMLA), 2002</strong>, enforced by the Enforcement Directorate (ED) and the Financial Intelligence Unit-India (FIU-IND).</p>
+      </div>
+
+      <div class="what-visual fade-in">
+        <div class="money-flow">
+          <div class="flow-title">// How Money Gets Laundered</div>
+          <div class="flow-step">
+            <div class="flow-num">01</div>
+            <div class="flow-info">
+              <h4>Criminal Activity</h4>
+              <p>Drug sales, corruption, fraud, trafficking generate illegal cash</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">02</div>
+            <div class="flow-info">
+              <h4>Placement</h4>
+              <p>Cash enters the financial system through banks, casinos, shell companies</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">03</div>
+            <div class="flow-info">
+              <h4>Layering</h4>
+              <p>Multiple transactions hide the trail — offshore accounts, wire transfers</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">04</div>
+            <div class="flow-info">
+              <h4>Integration</h4>
+              <p>Clean money re-enters economy as "legitimate" business income</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">05</div>
+            <div class="flow-info">
+              <h4>AML Detects & Stops</h4>
+              <p>Suspicious Activity Reports (SARs), KYC checks, transaction monitoring</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 STAGES -->
+<section class="stages" id="stages">
+  <div class="container">
+    <div class="section-label">Core Concept</div>
+    <h2 class="section-title">The 3 Classic Stages<br>of Money Laundering</h2>
+    <div class="stages-grid">
+      <div class="stage-card fade-in">
+        <div class="stage-icon">💉</div>
+        <div class="stage-num">Stage 01</div>
+        <h3>Placement</h3>
+        <p>The first and most risky stage. Illegal cash physically enters the financial system. The criminal tries to deposit large amounts without triggering detection.</p>
+        <p style="margin-top:0.8rem; font-size:0.82rem; color:var(--muted);">Common methods: Smurfing (structuring), cash-intensive businesses, currency exchange, casino chips.</p>
+        <div class="stage-example">⚠ Example: Depositing ₹9.5 lakh multiple times to avoid ₹10L reporting threshold</div>
+      </div>
+      <div class="stage-card fade-in">
+        <div class="stage-icon">🌀</div>
+        <div class="stage-num">Stage 02</div>
+        <h3>Layering</h3>
+        <p>The most complex stage. Money is moved through multiple transactions, accounts, and jurisdictions to create distance from its criminal origins and confuse investigators.</p>
+        <p style="margin-top:0.8rem; font-size:0.82rem; color:var(--muted);">Common methods: Shell companies, offshore accounts, real estate flipping, cryptocurrency mixing.</p>
+        <div class="stage-example">⚠ Example: Routing funds through 5 offshore shell companies in 3 countries</div>
+      </div>
+      <div class="stage-card fade-in">
+        <div class="stage-icon">✅</div>
+        <div class="stage-num">Stage 03</div>
+        <h3>Integration</h3>
+        <p>Cleaned money re-enters the legitimate economy. At this stage, it's extremely difficult to distinguish from legally earned income without prior investigation.</p>
+        <p style="margin-top:0.8rem; font-size:0.82rem; color:var(--muted);">Common methods: Luxury real estate, invoicing fraud, stock investments, high-value assets.</p>
+        <div class="stage-example">⚠ Example: Buying luxury apartments and selling them as "property income"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RED FLAGS -->
+<section style="background:var(--surface); padding:6rem 2rem;" id="redflags">
+  <div class="container">
+    <div class="section-label">Compliance Alert</div>
+    <h2 class="section-title">AML Red Flags — What to<br>Watch Out For</h2>
+    <div class="flags-grid" style="margin-top:3rem;">
+      <div class="flag-item fade-in">
+        <div class="flag-icon">💰</div>
+        <div class="flag-text">
+          <h4>Unusual Large Cash Transactions</h4>
+          <p>Deposits or withdrawals of large amounts of cash without clear business purpose or inconsistent with customer's profile</p>
+        </div>
+      </div>
+      <div class="flag-item fade-in">
+        <div class="flag-icon">🔄</div>
+        <div class="flag-text">
+          <h4>Structuring / Smurfing</h4>
+          <p>Breaking large amounts into smaller transactions just below reporting thresholds to avoid detection by authorities</p>
+        </div>
+      </div>
+      <div class="flag-item fade-in">
+        <div class="flag-icon">🌐</div>
+        <div class="flag-text">
+          <h4>Unexplained Cross-Border Transfers</h4>
+          <p>Wire transfers to/from high-risk jurisdictions with no clear business reason or relationship to the customer</p>
+        </div>
+      </div>
+      <div class="flag-item fade-in">
+        <div class="flag-icon">🏢</div>
+        <div class="flag-text">
+          <h4>Shell Company Involvement</h4>
+          <p>Transactions involving companies with no clear business activity, no employees, or opaque ownership structures</p>
+        </div>
+      </div>
+      <div class="flag-item fade-in">
+        <div class="flag-icon">🎰</div>
+        <div class="flag-text">
+          <h4>Casino / Gaming Activity</h4>
+          <p>Buying chips with cash, minimal gambling, then cashing out as "gambling winnings" to legitimize funds</p>
+        </div>
+      </div>
+      <div class="flag-item fade-in">
+        <div class="flag-icon">🏠</div>
+        <div class="flag-text">
+          <h4>Real Estate Anomalies</h4>
+          <p>Buying properties at significantly above/below market value, cash purchases, or rapid buying and selling</p>
+        </div>
+      </div>
+      <div class="flag-item fade-in">
+        <div class="flag-icon">🔐</div>
+        <div class="flag-text">
+          <h4>Customer Secrecy / Reluctance</h4>
+          <p>Customer refuses to provide KYC documents, is unusually secretive about source of funds or business activities</p>
+        </div>
+      </div>
+      <div class="flag-item fade-in">
+        <div class="flag-icon">₿</div>
+        <div class="flag-text">
+          <h4>Crypto Mixing / Tumbling</h4>
+          <p>Using cryptocurrency mixing services to obscure the trail of digital asset transactions across wallets</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KYC -->
+<section class="kyc" id="kyc">
+  <div class="container">
+    <div class="section-label">Compliance Process</div>
+    <h2 class="section-title">KYC — Know Your Customer</h2>
+    <div class="kyc-grid">
+      <div class="kyc-steps fade-in">
+        <div class="kyc-step">
+          <div class="kyc-dot">01</div>
+          <div class="kyc-info">
+            <h4>Customer Identification Program (CIP)</h4>
+            <p>Collect and verify name, date of birth, address, and government ID of every customer before onboarding</p>
+          </div>
+        </div>
+        <div class="kyc-step">
+          <div class="kyc-dot">02</div>
+          <div class="kyc-info">
+            <h4>Customer Due Diligence (CDD)</h4>
+            <p>Understand the nature of the customer's business, assess risk level, and establish expected transaction patterns</p>
+          </div>
+        </div>
+        <div class="kyc-step">
+          <div class="kyc-dot">03</div>
+          <div class="kyc-info">
+            <h4>Enhanced Due Diligence (EDD)</h4>
+            <p>For high-risk customers (PEPs, high-value clients, high-risk countries) — deeper investigation into source of funds and wealth</p>
+          </div>
+        </div>
+        <div class="kyc-step">
+          <div class="kyc-dot">04</div>
+          <div class="kyc-info">
+            <h4>Ongoing Monitoring</h4>
+            <p>Continuously monitor transactions against expected behaviour, update KYC records, and file SARs when suspicious activity is detected</p>
+          </div>
+        </div>
+        <div class="kyc-step">
+          <div class="kyc-dot">05</div>
+          <div class="kyc-info">
+            <h4>Record Keeping</h4>
+            <p>Maintain all KYC documents and transaction records for minimum 5 years as required by PMLA and global regulations</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="kyc-table fade-in">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer Type</th>
+              <th>Risk Level</th>
+              <th>Due Diligence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Retail Banking Client</td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td>Standard CDD</td>
+            </tr>
+            <tr>
+              <td>Small Business Owner</td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td>Standard CDD</td>
+            </tr>
+            <tr>
+              <td>High Net Worth Individual</td>
+              <td><span class="badge badge-med">Medium</span></td>
+              <td>Enhanced CDD</td>
+            </tr>
+            <tr>
+              <td>Politically Exposed Person (PEP)</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>EDD Required</td>
+            </tr>
+            <tr>
+              <td>Foreign Correspondent Bank</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>EDD Required</td>
+            </tr>
+            <tr>
+              <td>Crypto Exchange</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>EDD Required</td>
+            </tr>
+            <tr>
+              <td>NGO / Charity</td>
+              <td><span class="badge badge-med">Medium</span></td>
+              <td>Enhanced CDD</td>
+            </tr>
+            <tr>
+              <td>Cash-Intensive Business</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>EDD Required</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBAL LAWS -->
+<section class="laws" id="laws">
+  <div class="container">
+    <div class="section-label">Global Framework</div>
+    <h2 class="section-title">AML Laws Around<br>the World</h2>
+    <div class="laws-grid">
+      <div class="law-card fade-in">
+        <div class="law-flag">🇮🇳</div>
+        <div class="law-country">India</div>
+        <h3>Prevention of Money Laundering Act (PMLA)</h3>
+        <p>India's primary AML legislation. Enforced by the Enforcement Directorate (ED). Requires reporting entities to maintain KYC records and file Suspicious Transaction Reports with FIU-IND.</p>
+        <div class="law-year">2002, Amended 2023</div>
+      </div>
+      <div class="law-card fade-in">
+        <div class="law-flag">🇺🇸</div>
+        <div class="law-country">United States</div>
+        <h3>Bank Secrecy Act (BSA) / USA PATRIOT Act</h3>
+        <p>Requires US financial institutions to assist government agencies in detecting and preventing money laundering. FinCEN oversees compliance and SAR filings.</p>
+        <div class="law-year">1970 / 2001</div>
+      </div>
+      <div class="law-card fade-in">
+        <div class="law-flag">🇪🇺</div>
+        <div class="law-country">European Union</div>
+        <h3>EU Anti-Money Laundering Directives (AMLD)</h3>
+        <p>Series of directives (1AMLD to 6AMLD) progressively strengthening AML requirements across EU member states. New AMLA authority to begin in 2025.</p>
+        <div class="law-year">6AMLD — 2021</div>
+      </div>
+      <div class="law-card fade-in">
+        <div class="law-flag">🇬🇧</div>
+        <div class="law-country">United Kingdom</div>
+        <h3>Proceeds of Crime Act (POCA)</h3>
+        <p>Comprehensive legislation covering money laundering offences, asset recovery, and the confiscation of criminal proceeds. FCA and NCA enforce compliance.</p>
+        <div class="law-year">2002</div>
+      </div>
+      <div class="law-card fade-in">
+        <div class="law-flag">🌍</div>
+        <div class="law-country">Global</div>
+        <h3>FATF 40 Recommendations</h3>
+        <p>The Financial Action Task Force sets international standards for combating money laundering and terrorist financing. 200+ countries follow these recommendations.</p>
+        <div class="law-year">Updated 2023</div>
+      </div>
+      <div class="law-card fade-in">
+        <div class="law-flag">🇸🇬</div>
+        <div class="law-country">Singapore</div>
+        <h3>Corruption, Drug Trafficking & Serious Crimes Act</h3>
+        <p>MAS (Monetary Authority of Singapore) enforces strict AML requirements. Singapore is a major financial hub with zero tolerance for AML violations.</p>
+        <div class="law-year">1992, Amended 2021</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PENALTIES -->
+<section class="penalties" id="penalties">
+  <div class="container">
+    <div class="section-label">Consequences</div>
+    <h2 class="section-title">Cost of AML<br>Non-Compliance</h2>
+    <div class="penalty-grid" style="margin-top:3rem;">
+      <div class="penalty-card fade-in">
+        <span class="penalty-num">$4.3B</span>
+        <div class="penalty-label">HSBC Fine<br>US DOJ — 2012</div>
+      </div>
+      <div class="penalty-card fade-in">
+        <span class="penalty-num">$1.9B</span>
+        <div class="penalty-label">Standard Chartered<br>AML Fine — 2019</div>
+      </div>
+      <div class="penalty-card fade-in">
+        <span class="penalty-num">7 yrs</span>
+        <div class="penalty-label">Maximum Jail Term<br>Under India's PMLA</div>
+      </div>
+      <div class="penalty-card fade-in">
+        <span class="penalty-num">$3B</span>
+        <div class="penalty-label">Goldman Sachs<br>1MDB Settlement</div>
+      </div>
+    </div>
+    <div style="margin-top:2rem; padding:1.5rem; background:var(--card); border:1px solid var(--border); border-left:3px solid var(--accent2);">
+      <p style="font-size:0.88rem; color:var(--muted);">⚠️ <strong style="color:var(--text);">Under India's PMLA:</strong> Money laundering is a non-bailable offence. The accused must prove innocence (reverse burden of proof). Properties and assets can be attached even before conviction. Penalty includes rigorous imprisonment of 3 to 7 years, extendable to 10 years for drug-related offences.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<section class="articles" id="articles">
+  <div class="container">
+    <div class="section-label">Latest Posts</div>
+    <h2 class="section-title">Featured Articles</h2>
+    <div class="articles-grid">
+      <div class="article-card fade-in">
+        <div class="article-thumb">🏦</div>
+        <div class="article-body">
+          <div class="article-cat">Regulation</div>
+          <h3>India's PMLA 2023 Amendments: What Changed?</h3>
+          <p>A detailed breakdown of the latest amendments to the Prevention of Money Laundering Act and their impact on reporting entities, banks, and fintech companies.</p>
+          <div class="article-meta">
+            <span>AML Insight</span>
+            <span>8 min read</span>
+          </div>
+        </div>
+      </div>
+      <div class="article-card fade-in">
+        <div class="article-thumb">₿</div>
+        <div class="article-body">
+          <div class="article-cat">Crypto & AML</div>
+          <h3>How Cryptocurrency is Being Used to Launder Money</h3>
+          <p>From mixing services to DeFi protocols — an in-depth look at how criminals exploit blockchain technology and how regulators are fighting back.</p>
+          <div class="article-meta">
+            <span>AML Insight</span>
+            <span>12 min read</span>
+          </div>
+        </div>
+      </div>
+      <div class="article-card fade-in">
+        <div class="article-thumb">🕵️</div>
+        <div class="article-body">
+          <div class="article-cat">Case Study</div>
+          <h3>The ₹6,000 Crore ABG Shipyard Fraud: AML Lessons</h3>
+          <p>India's biggest bank fraud and what it reveals about failures in transaction monitoring, beneficial ownership tracking, and KYC at multiple institutions.</p>
+          <div class="article-meta">
+            <span>AML Insight</span>
+            <span>15 min read</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="newsletter fade-in">
+      <h2>Stay Ahead of Financial Crime</h2>
+      <p>Weekly AML updates, regulatory alerts, and compliance insights delivered to your inbox.</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Enter your email address">
+        <button>SUBSCRIBE →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="nav-logo">AML<span style="color:var(--accent2)">Insight</span></span>
+      <p>India's leading Anti-Money Laundering knowledge platform. Trusted by compliance officers, banking professionals, and financial crime investigators.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Topics</h4>
+      <ul>
+        <li><a href="#">What is AML?</a></li>
+        <li><a href="#">KYC / CDD</a></li>
+        <li><a href="#">FATF Guidelines</a></li>
+        <li><a href="#">Terrorist Financing</a></li>
+        <li><a href="#">Crypto AML</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Regulations</h4>
+      <ul>
+        <li><a href="#">India PMLA</a></li>
+        <li><a href="#">US BSA / FinCEN</a></li>
+        <li><a href="#">EU AMLD</a></li>
+        <li><a href="#">UK POCA</a></li>
+        <li><a href="#">FATF 40 Recs</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#">AML Glossary</a></li>
+        <li><a href="#">Case Studies</a></li>
+        <li><a href="#">SAR Filing Guide</a></li>
+        <li><a href="#">Training</a></li>
+        <li><a href="#">About Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 AMLInsight. All rights reserved.</span>
+    <span>For educational purposes only. Not legal advice.</span>
+  </div>
+</footer>
+
+<script>
+  // Fade in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Subscribe button
+  document.querySelector('.nav-cta').addEventListener('click', () => {
+    document.querySelector('.newsletter').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Newsletter submit
+  document.querySelector('.newsletter-form button').addEventListener('click', () => {
+    const input = document.querySelector('.newsletter-form input');
+    if (input.value.includes('@')) {
+      input.value = '✓ Subscribed successfully!';
+      input.style.color = 'var(--green)';
+      input.style.borderColor = 'var(--green)';
+    } else {
+      input.style.borderColor = 'var(--accent2)';
+      input.placeholder = 'Please enter a valid email';
+    }
+  });
+</script>
+</body>
+</html>
